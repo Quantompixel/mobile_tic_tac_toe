@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class TicTacToe extends StatefulWidget {
   const TicTacToe({super.key});
@@ -15,6 +16,14 @@ class _TicTacToeState extends State<TicTacToe> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        TextButton(
+          onPressed: () {
+            setState(() {
+              reset();
+            });
+          },
+          child: Text('Reset'),
+        ),
         Text('Player ${(playerIndex + 1).toString()}'),
         Expanded(
           child: GridView.builder(
@@ -27,11 +36,21 @@ class _TicTacToeState extends State<TicTacToe> {
             itemCount: 9,
             itemBuilder: (context, index) {
               return Center(
-                child: TextButton(
+                child: ElevatedButton(
                   // Rebuild each cell whenever the notifier changes.
-                  child: Text(
-                    ticTacToeGrid[index].toString(),
-                    style: const TextStyle(fontSize: 24),
+                  child: Container(
+                    margin: EdgeInsets.all(10),
+                    child: Builder(
+                      builder: (context) {
+                        if (ticTacToeGrid[index] == -1) {
+                          return SizedBox();
+                        } else if (ticTacToeGrid[index] == 0) {
+                          return SvgPicture.asset('assets/icons/circle.svg');
+                        } else {
+                          return SvgPicture.asset('assets/icons/cross.svg');
+                        }
+                      },
+                    ),
                   ),
                   onPressed: () {
                     setState(() {
