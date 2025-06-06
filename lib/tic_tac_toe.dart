@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class TicTacToe extends StatefulWidget {
-  const TicTacToe({super.key});
+  const TicTacToe({super.key, required this.onWin});
+  final ValueChanged<int> onWin;
 
   @override
   State<TicTacToe> createState() => _TicTacToeState();
@@ -61,6 +62,7 @@ class _TicTacToeState extends State<TicTacToe> {
                         if (!didWin) {
                           playerIndex = 1 - playerIndex;
                         } else {
+                          widget.onWin(playerIndex);
                           // You might want to pop up a dialog or something to announce the win.
                         }
                       }
