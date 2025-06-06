@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class TicTacToe extends StatefulWidget {
-  const TicTacToe({super.key, required this.onWin});
-  final ValueChanged<int> onWin;
+  const TicTacToe({super.key});
 
   @override
   State<TicTacToe> createState() => _TicTacToeState();
@@ -11,82 +10,133 @@ class TicTacToe extends StatefulWidget {
 
 class _TicTacToeState extends State<TicTacToe> {
   List<int> ticTacToeGrid = [-1, -1, -1, -1, -1, -1, -1, -1, -1];
-  int playerIndex = 0;
+  int playerId = 0;
+  GameState gameState = GameState.running;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
       children: [
-        TextButton(
-          onPressed: () {
-            setState(() {
-              reset();
-            });
-          },
-          child: Text('Reset'),
-        ),
-        Text('Player ${(playerIndex + 1).toString()}'),
-        Expanded(
-          child: GridView.builder(
-            padding: const EdgeInsets.all(12),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              mainAxisSpacing: 8,
-              crossAxisSpacing: 8,
+        Column(
+          children: [
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  reset();
+                });
+              },
+              child: Text('Reset'),
             ),
-            itemCount: 9,
-            itemBuilder: (context, index) {
-              return Center(
-                child: ElevatedButton(
-                  // Rebuild each cell whenever the notifier changes.
-                  child: Container(
-                    margin: EdgeInsets.all(10),
-                    child: Builder(
-                      builder: (context) {
-                        if (ticTacToeGrid[index] == -1) {
-                          return SizedBox();
-                        } else if (ticTacToeGrid[index] == 0) {
-                          return SvgPicture.asset('assets/icons/circle.svg');
-                        } else {
-                          return SvgPicture.asset('assets/icons/cross.svg');
-                        }
+            Text('Player ${(playerId + 1).toString()}'),
+            Expanded(
+              child: GridView.builder(
+                padding: const EdgeInsets.all(12),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  mainAxisSpacing: 8,
+                  crossAxisSpacing: 8,
+                ),
+                itemCount: 9,
+                itemBuilder: (context, index) {
+                  return Center(
+                    child: ElevatedButton(
+                      child: Container(
+                        margin: EdgeInsets.all(10),
+                        child: Builder(
+                          builder: (context) {
+                            if (ticTacToeGrid[index] == -1) {
+                              return SizedBox.expand();
+                            } else if (ticTacToeGrid[index] == 0) {
+                              return SvgPicture.asset(
+                                'assets/icons/circle.svg',
+                              );
+                            } else {
+                              return SvgPicture.asset('assets/icons/cross.svg');
+                            }
+                          },
+                        ),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          if (ticTacToeGrid[index] != -1) {
+                            return;
+                          }
+
+                          ticTacToeGrid[index] = playerId;
+
+                          if(checkForWin()) {
+                            gameState = (playerId == 0)
+                                ? GameState.winnerPlayer1
+                                : GameState.winnerPlayer2;
+                            return;
+                          }
+
+                          if(checkForDraw()) {
+                            gameState = GameState.draw;
+                            return;
+                          }
+
+                          switchPlayers();
+                        });
                       },
                     ),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      if (ticTacToeGrid[index] == -1) {
-                        ticTacToeGrid[index] = playerIndex;
-                        // Check win first, then switch players if no win, etc.
-                        bool didWin = checkForWin();
-                        if (!didWin) {
-                          playerIndex = 1 - playerIndex;
-                        } else {
-                          widget.onWin(playerIndex);
-                          // You might want to pop up a dialog or something to announce the win.
-                        }
-                      }
-                    });
-                  },
-                ),
-              );
-            },
-          ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+        Builder(
+          builder: (context) {
+            if (gameState == GameState.running) {
+              return Offstage();
+            }
+            return SizedBox.expand(
+              child: Card(
+                color: Colors.green,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Player ${(gameState == GameState.winnerPlayer1) ? 1 : 2} wins',
+                      style: TextStyle(color: Colors.white, fontSize: 25),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          reset();
+                        });
+                      },
+                      child: const Text('Reset'),
+                    ),
+                  ], //Text
+                ), //Center
+              ), //Card
+            );
+          },
         ),
       ],
     );
   }
 
   void switchPlayers() {
-    playerIndex = (playerIndex == 1) ? 0 : 1;
+    playerId = (playerId == 1) ? 0 : 1;
   }
 
   void setField(int index) {
-    // Example toggle logic; adjust to your own game logic.
     if (ticTacToeGrid[index] == -1) {
-      ticTacToeGrid[index] = playerIndex;
+      ticTacToeGrid[index] = playerId;
     }
-    checkForWin();
+  }
+
+  bool checkForDraw() {
+    for (int index = 0; index < ticTacToeGrid.length; index++) {
+      if (ticTacToeGrid[index] == -1) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   bool checkForWin() {
@@ -129,14 +179,9 @@ class _TicTacToeState extends State<TicTacToe> {
         if (field != firstFieldClaimedByPlayer) break;
 
         counter++;
-
-        print(
-          'DEBUG | c: $counter, f: $field, $winningPosition, $firstFieldClaimedByPlayer',
-        );
       }
 
       if (counter == 3) {
-        print('WIN: $winningPosition, $firstFieldClaimedByPlayer');
         return true;
       }
     }
@@ -147,5 +192,22 @@ class _TicTacToeState extends State<TicTacToe> {
     for (int index = 0; index < ticTacToeGrid.length; index++) {
       ticTacToeGrid[index] = -1;
     }
+    gameState = GameState.running;
+    playerId = 0;
+  }
+
+  String generateEndOfGameText() {
+    switch(gameState) {
+      case GameState.running:
+        return '';
+      case GameState.draw:
+        return 'Draw - Nobody wins';
+      case GameState.winnerPlayer1:
+        return 'Player 1 wins the game';
+      case GameState.winnerPlayer2:
+        return 'Player 2 wins the game';
+    }
   }
 }
+
+enum GameState { winnerPlayer1, winnerPlayer2, draw, running }
