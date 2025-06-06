@@ -64,14 +64,14 @@ class _TicTacToeState extends State<TicTacToe> {
 
                           ticTacToeGrid[index] = playerId;
 
-                          if(checkForWin()) {
+                          if (checkForWin()) {
                             gameState = (playerId == 0)
                                 ? GameState.winnerPlayer1
                                 : GameState.winnerPlayer2;
                             return;
                           }
 
-                          if(checkForDraw()) {
+                          if (checkForDraw()) {
                             gameState = GameState.draw;
                             return;
                           }
@@ -94,24 +94,27 @@ class _TicTacToeState extends State<TicTacToe> {
             return SizedBox.expand(
               child: Card(
                 color: Colors.green,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Player ${(gameState == GameState.winnerPlayer1) ? 1 : 2} wins',
-                      style: TextStyle(color: Colors.white, fontSize: 25),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        setState(() {
-                          reset();
-                        });
-                      },
-                      child: const Text('Reset'),
-                    ),
-                  ], //Text
-                ), //Center
-              ), //Card
+                child: Padding(
+                  padding: EdgeInsetsGeometry.all(10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Player ${(gameState == GameState.winnerPlayer1) ? 1 : 2} wins',
+                        style: TextStyle(color: Colors.white, fontSize: 25),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            reset();
+                          });
+                        },
+                        child: const Text('Reset'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             );
           },
         ),
@@ -130,6 +133,10 @@ class _TicTacToeState extends State<TicTacToe> {
   }
 
   bool checkForDraw() {
+    if(checkForWin()) {
+      return false;
+    }
+
     for (int index = 0; index < ticTacToeGrid.length; index++) {
       if (ticTacToeGrid[index] == -1) {
         return false;
@@ -197,7 +204,7 @@ class _TicTacToeState extends State<TicTacToe> {
   }
 
   String generateEndOfGameText() {
-    switch(gameState) {
+    switch (gameState) {
       case GameState.running:
         return '';
       case GameState.draw:
