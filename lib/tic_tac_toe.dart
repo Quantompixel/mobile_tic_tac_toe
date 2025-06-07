@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:mobile_tic_tac_toe/field.dart';
+import 'package:mobile_tic_tac_toe/game_status.dart';
 
 class TicTacToe extends StatefulWidget {
   const TicTacToe({super.key});
@@ -56,32 +57,16 @@ class _TicTacToeState extends State<TicTacToe> {
           builder: (context) {
             if (gameState == GameState.running) {
               return Offstage();
+            } else {
+              return GameStatus(
+                statusText: generateEndOfGameText(),
+                onPress: () {
+                  setState(() {
+                    reset();
+                  });        
+                },
+              );
             }
-            return SizedBox.expand(
-              child: Card(
-                color: Colors.green,
-                child: Padding(
-                  padding: EdgeInsetsGeometry.all(10),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        generateEndOfGameText(),
-                        style: TextStyle(color: Colors.white, fontSize: 25),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            reset();
-                          });
-                        },
-                        child: const Text('Reset'),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
           },
         ),
       ],
@@ -95,7 +80,7 @@ class _TicTacToeState extends State<TicTacToe> {
       }
 
       ticTacToeGrid[index] = playerId;
-      
+
       if (checkForWin()) {
         gameState = (playerId == 0)
             ? GameState.winnerPlayer1
