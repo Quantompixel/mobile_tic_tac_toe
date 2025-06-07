@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
+import 'package:mobile_tic_tac_toe/field.dart';
 
 class TicTacToe extends StatefulWidget {
   const TicTacToe({super.key});
@@ -9,7 +10,7 @@ class TicTacToe extends StatefulWidget {
 }
 
 class _TicTacToeState extends State<TicTacToe> {
-  List<int> ticTacToeGrid = [-1, -1, -1, -1, -1, -1, -1, -1, -1];
+  List<int> ticTacToeGrid = [0, 0, 1, 0, 0, 1, 1, 1, 0];
   int playerId = 0;
   GameState gameState = GameState.running;
 
@@ -39,45 +40,10 @@ class _TicTacToeState extends State<TicTacToe> {
                 itemCount: 9,
                 itemBuilder: (context, index) {
                   return Center(
-                    child: ElevatedButton(
-                      child: Container(
-                        margin: EdgeInsets.all(10),
-                        child: Builder(
-                          builder: (context) {
-                            if (ticTacToeGrid[index] == -1) {
-                              return SizedBox.expand();
-                            } else if (ticTacToeGrid[index] == 0) {
-                              return SvgPicture.asset(
-                                'assets/icons/circle.svg',
-                              );
-                            } else {
-                              return SvgPicture.asset('assets/icons/cross.svg');
-                            }
-                          },
-                        ),
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          if (ticTacToeGrid[index] != -1) {
-                            return;
-                          }
-
-                          ticTacToeGrid[index] = playerId;
-
-                          if (checkForWin()) {
-                            gameState = (playerId == 0)
-                                ? GameState.winnerPlayer1
-                                : GameState.winnerPlayer2;
-                            return;
-                          }
-
-                          if (checkForDraw()) {
-                            gameState = GameState.draw;
-                            return;
-                          }
-
-                          switchPlayers();
-                        });
+                    child: Field(
+                      fieldType: ticTacToeGrid[index],
+                      onPress: () {
+                        placeSymbol(index);
                       },
                     ),
                   );
@@ -100,7 +66,7 @@ class _TicTacToeState extends State<TicTacToe> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        'Player ${(gameState == GameState.winnerPlayer1) ? 1 : 2} wins',
+                        generateEndOfGameText(),
                         style: TextStyle(color: Colors.white, fontSize: 25),
                       ),
                       TextButton(
@@ -122,6 +88,30 @@ class _TicTacToeState extends State<TicTacToe> {
     );
   }
 
+  void placeSymbol(int index) {
+    setState(() {
+      if (ticTacToeGrid[index] != -1) {
+        return;
+      }
+
+      ticTacToeGrid[index] = playerId;
+      
+      if (checkForWin()) {
+        gameState = (playerId == 0)
+            ? GameState.winnerPlayer1
+            : GameState.winnerPlayer2;
+        return;
+      }
+
+      if (checkForDraw()) {
+        gameState = GameState.draw;
+        return;
+      }
+
+      switchPlayers();
+    });
+  }
+
   void switchPlayers() {
     playerId = (playerId == 1) ? 0 : 1;
   }
@@ -133,7 +123,7 @@ class _TicTacToeState extends State<TicTacToe> {
   }
 
   bool checkForDraw() {
-    if(checkForWin()) {
+    if (checkForWin()) {
       return false;
     }
 
@@ -186,9 +176,12 @@ class _TicTacToeState extends State<TicTacToe> {
         if (field != firstFieldClaimedByPlayer) break;
 
         counter++;
+
+        // print('DEBUG | c: $counter, f: $field, $winningPosition, $firstFieldClaimedByPlayer');
       }
 
       if (counter == 3) {
+        // print('WIN: $winningPosition, $firstFieldClaimedByPlayer');
         return true;
       }
     }
@@ -196,9 +189,7 @@ class _TicTacToeState extends State<TicTacToe> {
   }
 
   void reset() {
-    for (int index = 0; index < ticTacToeGrid.length; index++) {
-      ticTacToeGrid[index] = -1;
-    }
+    ticTacToeGrid = [-1, -1, -1, -1, -1, -1, -1, -1, -1];
     gameState = GameState.running;
     playerId = 0;
   }
