@@ -13,8 +13,18 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBar(title: const Text('Tic Tac Toe')),
-        body: TicTacToe(),
+        body: Container(
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0xFFFFDE98),
+                    Color(0xFFFFA066)
+                  ],
+                )),
+            child: TicTacToe()
+          ),
       ),
     );
   }
