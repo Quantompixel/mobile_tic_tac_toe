@@ -62,7 +62,7 @@ class _TicTacToeState extends State<TicTacToe> {
               return Offstage();
             } else {
               return GameOverlay(
-                statusText: generateEndOfGameText(),
+                winnerPlayerId: (gameState == GameState.draw) ? -1 : playerId,
                 onPress: () {
                   setState(() {
                     reset();
@@ -180,19 +180,6 @@ class _TicTacToeState extends State<TicTacToe> {
     ticTacToeGrid = [-1, -1, -1, -1, -1, -1, -1, -1, -1];
     gameState = GameState.running;
     playerId = 0;
-  }
-
-  String generateEndOfGameText() {
-    switch (gameState) {
-      case GameState.running:
-        return '';
-      case GameState.draw:
-        return 'Draw - Nobody wins';
-      case GameState.winnerPlayer1:
-        return 'Player 1 wins the game';
-      case GameState.winnerPlayer2:
-        return 'Player 2 wins the game';
-    }
   }
 }
 
