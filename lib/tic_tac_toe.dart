@@ -20,19 +20,15 @@ class _TicTacToeState extends State<TicTacToe> {
     return Stack(
       children: [
         Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  reset();
-                });
-              },
-              child: Text('Reset'),
-            ),
             Text('Player ${(playerId + 1).toString()}'),
-            Expanded(
+            Flexible(
+              fit: FlexFit.loose,
               child: GridView.builder(
                 padding: const EdgeInsets.all(12),
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
                   mainAxisSpacing: 8,
@@ -51,6 +47,14 @@ class _TicTacToeState extends State<TicTacToe> {
                 },
               ),
             ),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  reset();
+                });
+              },
+              child: Text('Reset'),
+            ),
           ],
         ),
         Builder(
@@ -63,7 +67,7 @@ class _TicTacToeState extends State<TicTacToe> {
                 onPress: () {
                   setState(() {
                     reset();
-                  });        
+                  });
                 },
               );
             }
