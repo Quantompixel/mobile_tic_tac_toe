@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -10,6 +11,7 @@ class ResetButton extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         onPress();
+        Feedback.forTap(context);
       },
       child: Container(
         width: 75.0,
