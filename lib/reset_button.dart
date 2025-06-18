@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 
 class ResetButton extends StatefulWidget {
@@ -30,8 +31,8 @@ class _ResetButtonState extends State<ResetButton> {
         _animate();
       },
       child: Container(
-        width: 50.0,
-        height: 50.0,
+        width: 75.0,
+        height: 75.0,
         decoration: BoxDecoration(
           color: const Color(0xFF462713),
           borderRadius: BorderRadius.circular(50),
@@ -50,8 +51,8 @@ class _ResetButtonState extends State<ResetButton> {
             curve: Curves.easeOut,
             child: SvgPicture.asset(
               'assets/icons/reset.svg',
-              width: 20,
-              height: 20,
+              width: 25,
+              height: 25,
             ),
           ),
         ),
