@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:mobile_tic_tac_toe/field.dart';
+import 'package:mobile_tic_tac_toe/game_overlay.dart';
 import 'package:mobile_tic_tac_toe/game_status.dart';
+import 'package:mobile_tic_tac_toe/reset_button.dart';
 
 class TicTacToe extends StatefulWidget {
   const TicTacToe({super.key});
@@ -22,7 +24,7 @@ class _TicTacToeState extends State<TicTacToe> {
         Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text('Player ${(playerId + 1).toString()}'),
+            GameStatus(playerId: playerId),
             Flexible(
               fit: FlexFit.loose,
               child: GridView.builder(
@@ -47,14 +49,11 @@ class _TicTacToeState extends State<TicTacToe> {
                 },
               ),
             ),
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  reset();
-                });
-              },
-              child: Text('Reset'),
-            ),
+            ResetButton(onPress: () {
+              setState(() {
+                reset();
+              });
+            })
           ],
         ),
         Builder(
@@ -62,7 +61,7 @@ class _TicTacToeState extends State<TicTacToe> {
             if (gameState == GameState.running) {
               return Offstage();
             } else {
-              return GameStatus(
+              return GameOverlay(
                 statusText: generateEndOfGameText(),
                 onPress: () {
                   setState(() {

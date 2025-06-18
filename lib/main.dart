@@ -12,6 +12,9 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        fontFamily: 'Poppins'
+      ),
       home: Scaffold(
         body: Container(
             decoration: BoxDecoration(

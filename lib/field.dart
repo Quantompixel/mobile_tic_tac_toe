@@ -34,14 +34,14 @@ class Field extends StatelessWidget {
               return Padding(
                 padding: EdgeInsetsGeometry.all(15),
                 child: SizedBox.expand(
-                  child: SvgPicture.asset('assets/icons/circle.svg'),
+                  child: SvgPicture.asset('assets/icons/cross.svg'),
                 ),
               );
             } else {
               return Padding(
                 padding: EdgeInsetsGeometry.all(15),
                 child: SizedBox.expand(
-                  child: SvgPicture.asset('assets/icons/cross.svg'),
+                  child: SvgPicture.asset('assets/icons/circle.svg'),
                 ),
               );
             }
