@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -14,8 +13,8 @@ class ResetButton extends StatelessWidget {
         Feedback.forTap(context);
       },
       child: Container(
-        width: 75.0,
-        height: 75.0,
+        width: 50.0,
+        height: 50.0,
         decoration: BoxDecoration(
           color: const Color(0xFF462713),
           borderRadius: BorderRadius.circular(50),
@@ -23,11 +22,17 @@ class ResetButton extends StatelessWidget {
             BoxShadow(
               color: Colors.black.withAlpha(25),
               blurRadius: 4,
-              offset: Offset(0, 4)
-            )
-          ]
+              offset: Offset(0, 4),
+            ),
+          ],
         ),
-        child: Center(child: SvgPicture.asset('assets/icons/reset.svg')),
+        child: Center(
+          child: SvgPicture.asset(
+            'assets/icons/reset.svg',
+            width: 20,
+            height: 20,
+          ),
+        ),
       ),
     );
   }
